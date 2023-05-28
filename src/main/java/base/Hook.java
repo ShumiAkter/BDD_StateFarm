@@ -1,9 +1,12 @@
 package base;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
+import io.cucumber.java.Scenario;
 import utils.Browser;
 
 public class Hook {
@@ -27,8 +30,11 @@ public class Hook {
 	
 
 	@After
-	public static void afterHook() {
-		testBase.closingBrower();
+	public static void afterHook(Scenario scenario) {
+		if(scenario.isFailed()) {
+			final byte [] ss = ((TakesScreenshot)TestBase.driver).getScreenshotAs(OutputType.BYTES);
+			scenario.attach(ss, "image/png", "error.png");
+		}
 	}
 
 }
